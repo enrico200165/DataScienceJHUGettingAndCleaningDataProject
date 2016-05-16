@@ -21,10 +21,10 @@ the data actually used for this task are available at:
 https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip
 
 ### Raw Data Codebook
-A description of the data is available, along with the data themselves, at the address provided above so it will not be replicated here
+A description of the data is available, along with the data themselves, at the address provided above, so it will not be replicated here
 
 ### Raw Data Complementary Info
-An info about the raw data that is not explicit is that the data are spread in several files and that very often the corrispondence/join between the data is given by the position of the rows in the files, ie. observation at row N in one file should be joined to observation N in another file.
+The data are spread in several files. An info about the raw data that is not explicit in the original documentation is that very often the corrispondence/join between the data spread across files is given by the position of the rows in the files, ie. observation at row N in one file should be joined to observation N in another file.
 
 
 ## Transformations Performed To Produce The New (Tidy) Data Set
