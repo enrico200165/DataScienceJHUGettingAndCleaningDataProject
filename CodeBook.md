@@ -41,7 +41,7 @@ substrings mean() and std() in variable names
 * Read subjects in memory, into a single object, from files "test/subject_test.txt" and "train/subject_train.txt"
 * Joined Subjects, Activities and subsetted measures data frame, via cbind() given that the originary data frame implemented join implictly, by line position (number)
 * Calculated the means and produced final tidy dataframe
-* Written the data frame to file <work dir>/data/HumanActivityRecognitionUsingSmartphonesDataSet_tidy.txt
+* Written the data frame to file <work dir>/data/HumanActivityRecognitionUsingSmartphonesDataSet_tidy.txt  
 (All the steps above performed in a single R script, see README.md)
 
 ## The Tidy Data
