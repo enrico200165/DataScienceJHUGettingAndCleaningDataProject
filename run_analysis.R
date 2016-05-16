@@ -16,7 +16,7 @@
 ## === PSEUDO CONSTANTS ========================================================
 #  --- ( data used in more than one function )
 datadir <- "./data"
-allRawData
+tidyfname <- "HumanActivityRecognitionUsingSmartphonesDataSet_tidy.txt"
 
 # ------------------------------------------------------------------------------
 
@@ -110,22 +110,28 @@ setup <- function(working_dir) {
       
         
         # --- packages ---
-        ensure.package("dplyr")
         # ensure.package("xlsx") just to test it
-
+        ensure.package("plyr")
+        ensure.package("dplyr")
+        ensure.package("knitr") # not sure if I will use it from here or at all
 
         # we may have modified it setting the defaul, so return it
         working_dir
 }
 
 
+## ============================= MAIN CODE ====================================
+# global because I am in a hurry, one day late
 
-if (is.null(allRawData)) {
+setup()
+
+if (!exists("allRawData")) {
         print(paste("loading raw data"))
         allRawData <- rbind(readFileFromDataDir("test/X_test.txt")
                            ,readFileFromDataDir("train/X_train.txt"))
         # print(paste(nrow(allRawData)))
 }
+
 if (nrow(allRawData) != 10299) {
         warn(paste(nrow(allRawData),"unexpected nr of rows in raw data, expected",10299))
         stop()
@@ -145,10 +151,10 @@ names(allRawData) <- rawVariableNames
 colsOfinterestidx <- grep("(mean|std)\\(\\)", names(allRawData))
 # print(colsOfinterestidx)
 # subset to mean and stds columns
-rawDataSubSet  <- allRawData[, colsOfinterestidx]
-# print(head(str(rawDataSubSet)))
+rawDataColSubSet  <- allRawData[, colsOfinterestidx]
+# print(head(str(rawDataColSubSet)))
 
-# --- get the activities and add them to data
+# --- process activities
 # Use descriptive activity names to name the activities in the data set.
 # Get the activity data and map to nicer names:
 activities <- rbind(readFileFromDataDir("test/y_test.txt"),
@@ -160,45 +166,40 @@ activityNames <-
 activities <- activityNames[activities]
 # print(activities)
 
-# make variable names more user friendly
-names(rawDataSubSet) <- gsub("^t", "Time", names(rawDataSubSet))
-names(rawDataSubSet) <- gsub("^f", "Frequency", names(rawDataSubSet))
-names(rawDataSubSet) <- gsub("-mean\\(\\)", "Mean", names(rawDataSubSet))
-names(rawDataSubSet) <- gsub("-std\\(\\)", "StdDev", names(rawDataSubSet))
-names(rawDataSubSet) <- gsub("-", "", names(rawDataSubSet))
-names(rawDataSubSet) <- gsub("BodyBody", "Body", names(rawDataSubSet))
-print(names(rawDataSubSet))
-
-## 
-# Assumptions:
-# setup() has been performed 
-performanalysis <- function(allRawData) {
-        
-        ### move loading of data in here
-}
+# --- make variable names more user friendly ---
+names(rawDataColSubSet) <- gsub("^t", "Time", names(rawDataColSubSet))
+names(rawDataColSubSet) <- gsub("^f", "Frequency", names(rawDataColSubSet))
+names(rawDataColSubSet) <- gsub("-mean\\(\\)", "Mean", names(rawDataColSubSet))
+names(rawDataColSubSet) <- gsub("-std\\(\\)", "StdDev", names(rawDataColSubSet))
+names(rawDataColSubSet) <- gsub("-", "", names(rawDataColSubSet))
+names(rawDataColSubSet) <- gsub("BodyBody", "Body", names(rawDataColSubSet))
+# print(names(rawDataColSubSet))
 
 
+# --- process subjects ---
+subjects <-  rbind(readFileFromDataDir("test/subject_test.txt"),
+                   readFileFromDataDir("train/subject_train.txt"))
+subjects <- subjects[, 1]
+# print(length(subjects))
+
+partlyTidy <- cbind(Subject = subjects, Activity = activities, rawDataColSubSet)
+# print(head(partlyTidy)[1:3])
+
+# --- finally build tidy data set
+mymeans <- function(df) { colMeans(df[,-c(1,2)]) }
+tidy <- ddply(partlyTidy, .(Subject, Activity), mymeans)
+# print(tidy[1:5])
+# prepend Mean to var names, except first 2, Subject, Activity
+names(tidy)[-c(1,2)] <- paste0("Mean", names(tidy)[-c(1,2)])
+#print(head(tidy[1:5]))
 
 
-
-
-
-
-
-
-
-
-
-#setup(working_dir)
-
-# remove("allRawData")
-#allRawData <- NULL
-performanalysis()
-
-# quick&dirty development tests
-# readFileFromDataDir("train/X_train.txt")
+# --- write it ---
+write.table(tidy,file.path(datadir,tidyfname), row.names = FALSE)
 
 print("----------- normal termination -----------")
 
+# return tidy df
+tidy
 
 
