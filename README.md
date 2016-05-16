@@ -1,7 +1,9 @@
 # Objectives
- To demonstrate your ability to collect, work with, and clean a data set by producing a tidy data set starting from an untidy data set.
-The originary data for the untidy data set, descriptions of those data are available at:A full description is available at the site where the data was obtained:
+To demonstrate your ability to collect, work with, and clean a data set by producing a tidy data set starting from an untidy data set.
+
+The originary data for the untidy data set and descriptions of the data are available at:
 http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones
+
 the data actually used for this task are available at:
 https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip
 
